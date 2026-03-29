@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ action }} Campaign</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #333; }
+        .container { max-width: 600px; margin: 40px auto; padding: 20px; }
+        .form-card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1 { margin-bottom: 30px; color: #1a1a2e; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        textarea { min-height: 100px; resize: vertical; }
+        .btn { display: inline-block; padding: 12px 24px; background: #1a1a2e; color: white; text-decoration: none; border-radius: 4px; border: none; cursor: pointer; font-size: 14px; }
+        .btn:hover { background: #2d2d44; }
+        .btn-primary { background: #4caf50; }
+        .btn-primary:hover { background: #45a049; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: #666; text-decoration: none; }
+        .back-link:hover { color: #1a1a2e; }
+        .template-preview { background: #f5f5f5; padding: 15px; border-radius: 4px; margin-top: 10px; font-size: 13px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+        
+        <div class="form-card">
+            <h1>{{ action }} Campaign</h1>
+            
+            <form method="POST">
+                <div class="form-group">
+                    <label for="name">Campaign Name</label>
+                    <input type="text" id="name" name="name" required placeholder="e.g., Q1 Security Awareness Test">
+                </div>
+                
+                <div class="form-group">
+                    <label for="template">Email Template</label>
+                    <select id="template" name="template" onchange="updatePreview()">
+                        <option value="password_reset">Password Reset Alert</option>
+                        <option value="invoice">Invoice Notification</option>
+                        <option value="shared_file">Shared File Alert</option>
+                    </select>
+                    <div class="template-preview" id="preview">
+                        Sends a fake password reset email claiming account security issues.
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Email Subject</label>
+                    <input type="text" id="subject" name="subject" required placeholder="e.g., Urgent: Verify Your Account Now">
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description (optional)</label>
+                    <textarea id="description" name="description" placeholder="Notes about this campaign..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">{{ action }} Campaign</button>
+                <a href="/" class="btn">Cancel</a>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        const previews = {
+            'password_reset': 'Sends a fake password reset email claiming account security issues. Target may feel urgency to "verify" their account.',
+            'invoice': 'Sends a fake invoice notification. Target may be curious about the charges and click to view details.',
+            'shared_file': 'Claims someone shared a document. Target may click expecting to see an expected file.'
+        };
+        
+        function updatePreview() {
+            const template = document.getElementById('template').value;
+            document.getElementById('preview').textContent = previews[template];
+        }
+    </script>
+</body>
+</html>
