@@ -6,11 +6,15 @@ load_dotenv()
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
     
-    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
     FROM_EMAIL = os.environ.get('FROM_EMAIL', 'security@yourcompany.com')
     FROM_NAME = os.environ.get('FROM_NAME', 'IT Security Team')
     
     BASE_URL = os.environ.get('BASE_URL', 'http://localhost:5000')
+    
+    SMTP_HOST = os.environ.get('SMTP_HOST', 'smtp.gmail.com')
+    SMTP_PORT = int(os.environ.get('SMTP_PORT', 587))
+    SMTP_USER = os.environ.get('SMTP_USER')
+    SMTP_PASSWORD = os.environ.get('SMTP_PASSWORD')
     
     POSTGRES_HOST = os.environ.get('POSTGRES_HOST', 'localhost')
     POSTGRES_PORT = os.environ.get('POSTGRES_PORT', '5432')

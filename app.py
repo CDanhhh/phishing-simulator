@@ -65,8 +65,8 @@ def send_campaign(campaign_id):
         flash('No recipients to send to!', 'danger')
         return redirect(url_for('campaign_detail', campaign_id=campaign_id))
     
-    if not Config.SENDGRID_API_KEY:
-        flash('SendGrid API key not configured!', 'danger')
+    if not Config.SMTP_USER or not Config.SMTP_PASSWORD:
+        flash('SMTP not configured!', 'danger')
         return redirect(url_for('campaign_detail', campaign_id=campaign_id))
     
     template_content = get_email_template(campaign.template_name)
@@ -198,6 +198,7 @@ def campaign_stats(campaign_id):
 @app.route('/api/campaigns/<int:campaign_id>/delete', methods=['POST'])
 def delete_campaign(campaign_id):
     campaign = Campaign.query.get_or_404(campaign_id)
+    ClickLog.query.filter_by(campaign_id=campaign_id).delete()
     db.session.delete(campaign)
     db.session.commit()
     flash(f'Campaign deleted!', 'success')
@@ -206,6 +207,7 @@ def delete_campaign(campaign_id):
 @app.route('/api/recipients/<int:recipient_id>/delete', methods=['POST'])
 def delete_recipient(recipient_id):
     recipient = Recipient.query.get_or_404(recipient_id)
+    ClickLog.query.filter_by(recipient_id=recipient_id).delete()
     db.session.delete(recipient)
     db.session.commit()
     flash(f'Recipient deleted!', 'success')
@@ -218,11 +220,11 @@ def get_email_template(template_name):
 <head>
     <meta charset="UTF-8">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header { background: #d32f2f; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; margin: -30px -30px 20px -30px; }
-        .button { display: inline-block; background: #1976d2; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; margin: 20px 0; }
-        .footer { color: #666; font-size: 12px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
+        body {{ font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+        .header {{ background: #d32f2f; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; margin: -30px -30px 20px -30px; }}
+        .button {{ display: inline-block; background: #1976d2; color: white; padding: 12px 30px; text-decoration: none; border-radius: 4px; margin: 20px 0; }}
+        .footer {{ color: #666; font-size: 12px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }}
     </style>
 </head>
 <body>
