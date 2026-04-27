@@ -57,7 +57,11 @@ flask init-db
 python app.py
 ```
 
-Access the dashboard at: http://localhost:5000
+Access the landing page (static root): http://localhost:5000/
+
+Access the Flask-rendered dashboard: http://localhost:5000/dashboard
+
+Note: The repository now contains a static `index.html` at the project root that serves as a small landing page (logo + button). The dashboard template formerly named `templates/index.html` has been renamed to `templates/dashboard.html` and is served by Flask at `/dashboard`.
 
 ## Usage
 
