@@ -21,6 +21,16 @@ class Config:
     POSTGRES_DB = os.environ.get('POSTGRES_DB', 'phishing_simulator')
     POSTGRES_USER = os.environ.get('POSTGRES_USER', 'postgres')
     POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', 'postgres')
-    
-    SQLALCHEMY_DATABASE_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+    # If a provider (Render, Heroku, etc.) supplies a full DATABASE_URL, prefer it.
+    # Some providers use the legacy `postgres://` scheme which SQLAlchemy warns about;
+    # normalize to `postgresql://` when needed.
+    DATABASE_URL = os.environ.get('DATABASE_URL') or os.environ.get('SQLALCHEMY_DATABASE_URI')
+
+    if DATABASE_URL:
+        # normalize scheme
+        if DATABASE_URL.startswith('postgres://'):
+            DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
+        SQLALCHEMY_DATABASE_URI = DATABASE_URL
+    else:
+        SQLALCHEMY_DATABASE_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
