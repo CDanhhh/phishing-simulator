@@ -19,6 +19,7 @@ def init_db_command():
     print("Database initialized!")
 
 @app.route('/')
+@app.route('/dashboard')
 def index():
     campaigns = Campaign.query.order_by(Campaign.created_at.desc()).all()
     recipients_count = Recipient.query.count()
