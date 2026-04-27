@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory
 from datetime import datetime
 from config import Config
 from models import db, Recipient, Campaign, ClickLog
@@ -19,8 +19,13 @@ def init_db_command():
     print("Database initialized!")
 
 @app.route('/')
+def root():
+    # Serve the static landing page at the repository root (`index.html`).
+    return send_from_directory(os.path.dirname(__file__), 'index.html')
+
+
 @app.route('/dashboard')
-def index():
+def dashboard():
     campaigns = Campaign.query.order_by(Campaign.created_at.desc()).all()
     recipients_count = Recipient.query.count()
     total_clicks = ClickLog.query.filter(ClickLog.clicked_at.isnot(None)).count()
@@ -34,7 +39,7 @@ def index():
         'click_rate': round((total_clicks / total_sent * 100), 2) if total_sent > 0 else 0
     }
     
-    return render_template('index.html', campaigns=campaigns, stats=stats)
+    return render_template('dashboard.html', campaigns=campaigns, stats=stats)
 
 @app.route('/campaigns/new', methods=['GET', 'POST'])
 def new_campaign():
@@ -203,7 +208,7 @@ def delete_campaign(campaign_id):
     db.session.delete(campaign)
     db.session.commit()
     flash(f'Campaign deleted!', 'success')
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard'))
 
 @app.route('/api/recipients/<int:recipient_id>/delete', methods=['POST'])
 def delete_recipient(recipient_id):
