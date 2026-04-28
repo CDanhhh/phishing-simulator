@@ -23,6 +23,21 @@ def set_csp(response):
     response.headers['Content-Security-Policy'] = csp
     return response
 
+@app.route('/favicon.ico')
+def favicon():
+    # Serve favicon from the static directory so deployments like Vercel can fetch it at /favicon.ico
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
+
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    # Log full stack trace to the server log (visible in Vercel logs)
+    app.logger.exception('Unhandled exception')
+    if app.debug:
+        import traceback
+        return '<pre>' + traceback.format_exc() + '</pre>', 500
+    return 'Internal Server Error', 500
+
 def init_db():
     db.create_all()
 
