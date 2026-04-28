@@ -10,6 +10,19 @@ app.config.from_object(Config)
 db.init_app(app)
 email_service = EmailService()
 
+
+@app.after_request
+def set_csp(response):
+    csp = (
+        "default-src 'none'; "
+        "script-src 'self' https://static.cloudflareinsights.com; "
+        "connect-src 'self' https://static.cloudflareinsights.com; "
+        "img-src 'self' data: https://justinsec.me; "
+        "style-src 'unsafe-inline';"
+    )
+    response.headers['Content-Security-Policy'] = csp
+    return response
+
 def init_db():
     db.create_all()
 
