@@ -14,11 +14,11 @@ email_service = EmailService()
 @app.after_request
 def set_csp(response):
     csp = (
-        "default-src 'none'; "
+        "default-src 'self'; "
         "script-src 'self' https://static.cloudflareinsights.com; "
         "connect-src 'self' https://static.cloudflareinsights.com; "
-        "img-src 'self' data: https://justinsec.me; "
-        "style-src 'unsafe-inline';"
+        "img-src 'self' data: https://justinsec.me https://static.cloudflareinsights.com; "
+        "style-src 'self' 'unsafe-inline';"
     )
     response.headers['Content-Security-Policy'] = csp
     return response
